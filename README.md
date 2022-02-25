@@ -1,6 +1,6 @@
 # guard::codespell
 
-**guard-codespell** helps keeping your code typo free by running [codespell](https://github.com/codespell-project/codespell) when files are modified
+**guard-codespell** helps in keeping your code typo free by running [codespell](https://github.com/codespell-project/codespell) when files are modified
 
 ## Installation
 
@@ -22,6 +22,24 @@ $ bundle install
 ## Usage
 
 See guard documentation for how to [add a guard plugin](https://github.com/guard/guard#add-guard-plugins) and [how to use guard](https://github.com/guard/guard#usage).
+
+## Configuration
+
+Some configuration options are available to use with guard-codespell.
+
+| Option | Type | Description |
+| ----- | ----- | ----- |
+| `all_on_start` | Boolean | Run codespell when starting guard |
+| `config` | String | Path to a [codespell config file](https://github.com/codespell-project/codespell#using-a-config-file) | 
+| `debug` | Boolean | Show the codespell command that is used when guard-codespell runs |
+| `only_git_changes` | Boolean | Only run codespell on files tracked by git (the result of `git status --porcelain` is used to create the list of files to check for errors. | 
+
+Here's an example on how to use those options in your Guardfile
+
+```ruby
+guard :codespell, config: ".codespellrc", debug: true, only_git_changes: true do
+end 
+```
 
 ## Contributing
 
