@@ -35,6 +35,7 @@ module Guard
     # @return [Object] the task result
     def run_all
       return warn_codespell_missing unless codespell
+      return run_codespell(changed_files) if options[:only_git_changes]
 
       run_codespell
     end
@@ -66,8 +67,9 @@ module Guard
     def run_codespell(paths = [])
       Guard::Compat::UI.info "Looking for typos with codespell"
       cmd = build_command(paths)
-      Guard::Compat::UI.info "... running #{cmd}"
+      Guard::Compat::UI.info "... running #{cmd}" if options[:debug]
       system(cmd)
+      Guard::Compat::UI.info "Codespell check finished"
     end
 
     def build_command(paths)
@@ -94,6 +96,13 @@ module Guard
     def warn_codespell_missing
       Guard::Compat::UI.warning "Spellcheck failed - guard-codespell cannot find the codespell library."
       Guard::Compat::UI.warning "Please run `pip install codespell` to resolve this issue."
+    end
+
+    # Fetch a list of changed files from the result of git status
+    def changed_files
+      `git status --porcelain`.lines.map do |line|
+        line.chomp.split("  ").last
+      end
     end
   end
 end

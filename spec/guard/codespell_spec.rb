@@ -4,9 +4,10 @@ require "guard/compat/test/helper"
 require "guard/codespell"
 
 RSpec.describe Guard::Codespell do
-  subject(:guard) { described_class.new({}) }
+  subject(:guard) { described_class.new(options) }
 
   let(:paths) { %w[path/to/foo.rb path/to/bar/baz.js] }
+  let(:options) { {} }
 
   before do
     allow(guard).to receive(:run_codespell)
@@ -38,6 +39,17 @@ RSpec.describe Guard::Codespell do
       it "calls run_codespell without any args" do
         guard.run_all
         expect(guard).to have_received(:run_codespell).with(no_args)
+      end
+
+      context "when only_git_changes option is set to true" do
+        let(:options) { { only_git_changes: true } }
+
+        it "calls run_codespell without any args" do
+          allow(guard).to receive(:changed_files).and_return(paths)
+
+          guard.run_all
+          expect(guard).to have_received(:run_codespell).with(paths)
+        end
       end
     end
 
